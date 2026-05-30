@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { useTranslations } from "next-intl";
+
+import LanguageSelector from "@/components/LanguageSelector";
 
 const features = [
   {
@@ -19,6 +22,8 @@ const features = [
 ];
 
 export default function Home() {
+  const t = useTranslations("HomePage");
+
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(70,60,230,0.12),transparent_28%),linear-gradient(180deg,#ffffff_0%,#f9f8ff_100%)] text-slate-950">
       <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-12 px-6 py-10 lg:px-12">
@@ -26,7 +31,7 @@ export default function Home() {
           <div className="max-w-2xl space-y-4">
             <p className="text-xs uppercase tracking-[0.35em] text-slate-500">Saturno</p>
             <h1 className="text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
-              A modern Enneagram personality test experience.
+              {t("welcome")}
             </h1>
             <p className="text-lg leading-8 text-slate-600 sm:text-xl">
               Build trust, collect insights, and help visitors discover their personality type with a playful test and modern storytelling.
@@ -34,6 +39,7 @@ export default function Home() {
           </div>
 
           <div className="flex flex-col gap-4 sm:items-end">
+            <LanguageSelector />
             <Link
               href="/analyzer"
               className="inline-flex items-center justify-center rounded-full bg-indigo-600 px-8 py-4 text-base font-semibold text-white transition hover:bg-indigo-500 shadow-lg shadow-indigo-500/25"
