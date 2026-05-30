@@ -2,11 +2,12 @@ import { VertexAI } from "@google-cloud/vertexai";
 
 const project = process.env.GOOGLE_CLOUD_PROJECT || "gen-lang-client-0647232927";
 const location = process.env.GOOGLE_CLOUD_LOCATION || "us-east1";
+const model = process.env.GOOGLE_VERTEX_MODEL || "gemini-2.0-flash";
 
 export const vertexAI = new VertexAI({ project, location });
 
 export const generativeModel = vertexAI.getGenerativeModel({
-  model: "gemini-1.5-flash",
+  model,
   generationConfig: {
     maxOutputTokens: 2048,
     temperature: 0.7,

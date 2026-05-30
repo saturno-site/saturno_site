@@ -38,6 +38,12 @@ export default function AiChatSession({ quizData, onComplete }: AiChatSessionPro
         play("message");
       } catch (error) {
         console.error("Failed to start AI session", error);
+        setMessages([
+          {
+            role: "model",
+            text: "The AI analyzer could not start. Please check the Vertex AI model/project configuration, then try again.",
+          },
+        ]);
       } finally {
         setIsLoading(false);
       }
@@ -81,6 +87,13 @@ export default function AiChatSession({ quizData, onComplete }: AiChatSessionPro
       ]);
     } catch (error) {
       console.error("Chat error", error);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "model",
+          text: "I couldn't reach the analyzer service. Please verify the AI backend configuration and try again.",
+        },
+      ]);
     } finally {
       setIsLoading(false);
     }
