@@ -35,17 +35,17 @@ export default function Home() {
 
           <div className="flex flex-col gap-4 sm:items-end">
             <Link
+              href="/analyzer"
+              className="inline-flex items-center justify-center rounded-full bg-indigo-600 px-8 py-4 text-base font-semibold text-white transition hover:bg-indigo-500 shadow-lg shadow-indigo-500/25"
+            >
+              Start AI Analyzer
+            </Link>
+            <Link
               href="/quiz"
               className="inline-flex items-center justify-center rounded-full bg-slate-950 px-8 py-4 text-base font-semibold text-white transition hover:bg-slate-800"
             >
-              Discover your archetype
+              Quick Test
             </Link>
-            <a
-              href="mailto:hello@example.com"
-              className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-8 py-4 text-base font-semibold text-slate-950 transition hover:border-slate-400 hover:bg-slate-50"
-            >
-              Talk to us
-            </a>
           </div>
         </header>
 

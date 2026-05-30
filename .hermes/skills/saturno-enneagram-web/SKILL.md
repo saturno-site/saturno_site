@@ -32,6 +32,8 @@ Read as needed:
 
 Write updates there when project-specific facts/plans should persist without bloating global Hermes memory.
 
+Canonical project context lives inside the git repo at `saturno/.hermes/`; parent-level context is wrapper/pointer only. See `references/project-context-versioning.md` for the versioning pattern, recommended layout, gitignore policy, and Hermes `skills.external_dirs` verification.
+
 ## Product goal
 
 Build a premium, animated Enneagram personality-test experience.
