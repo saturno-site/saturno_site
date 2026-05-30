@@ -35,7 +35,7 @@ import { EnneagramBoard } from "@/components/board/EnneagramBoard";
 import TraitMeter from "@/components/profile/TraitMeter";
 import GrowthPath from "@/components/quiz/GrowthPath";
 import ShareCard, { ShareActions } from "@/components/quiz/ShareCard";
-import { clearResult } from "@/lib/quizStorage";
+import { clearResult, loadHistory } from "@/lib/quizStorage";
 
 // ── Constants ─────────────────────────────────────────
 
@@ -202,6 +202,216 @@ function ConfirmDialog({
   );
 }
 
+// ── Comparison Overlay ────────────────────────────────
+
+/**
+ * Modal overlay comparing a past quiz result with the current result.
+ * Shows side-by-side type info, a shift message, and score comparison bars.
+ */
+function ComparisonOverlay({
+  pastResult,
+  currentResult,
+  onClose,
+}: {
+  pastResult: QuizResult;
+  currentResult: QuizResult;
+  onClose: () => void;
+}) {
+  const pastType = getTypeFull(pastResult.primary.typeId);
+  const pastColor = getTypeColor(pastResult.primary.typeId);
+  const currentType = getTypeFull(currentResult.primary.typeId);
+  const currentColor = getTypeColor(currentResult.primary.typeId);
+  const isSameType =
+    pastResult.primary.typeId === currentResult.primary.typeId;
+
+  /* ── Collect types with score >= 15% from either result ── */
+  const significantTypes = new Set<EnneagramTypeId>();
+  for (const s of pastResult.breakdown) {
+    if (s.normalizedScore >= 15) significantTypes.add(s.typeId);
+  }
+  for (const s of currentResult.breakdown) {
+    if (s.normalizedScore >= 15) significantTypes.add(s.typeId);
+  }
+
+  const comparisonBars = Array.from(significantTypes).map((typeId) => {
+    const pastScore =
+      pastResult.breakdown.find((s) => s.typeId === typeId)
+        ?.normalizedScore ?? 0;
+    const currentScore =
+      currentResult.breakdown.find((s) => s.typeId === typeId)
+        ?.normalizedScore ?? 0;
+    const typeData = enneagramTypesFull.find((t) => t.id === typeId);
+    return {
+      typeId,
+      pastScore,
+      currentScore,
+      name: typeData?.headline ?? typeId,
+      number: typeData?.number ?? 0,
+    };
+  });
+
+  const maxBarScore = Math.max(
+    ...comparisonBars.map((b) => Math.max(b.pastScore, b.currentScore)),
+    1,
+  );
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        transition={springTransition}
+        className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-white/10 bg-slate-900 p-6 shadow-2xl sm:p-8"
+        onClick={(e: React.MouseEvent) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Compare past result"
+      >
+        {/* ── Close button ─────────────────────────────── */}
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full text-slate-500 transition-colors hover:bg-white/10 hover:text-white"
+          aria-label="Close comparison"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+
+        {/* ── Side-by-side type cards ──────────────────── */}
+        <div className="mb-6 mt-6 grid grid-cols-[1fr_auto_1fr] items-center gap-4">
+          {/* Then */}
+          <div className="rounded-xl border border-white/10 bg-white/5 p-4 text-center">
+            <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">
+              Then
+            </span>
+            <div
+              className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-lg text-lg font-bold"
+              style={{
+                backgroundColor: pastColor.light,
+                color: pastColor.primary,
+              }}
+            >
+              {pastType.number}
+            </div>
+            <p className="font-semibold text-white">{pastType.name}</p>
+            <p className="text-xs text-slate-400">
+              The {pastType.headline}
+            </p>
+            <p className="mt-1 text-xs text-slate-500">
+              {pastResult.confidence >= 0.15 ? "Confident" : "Mixed"}
+            </p>
+          </div>
+
+          {/* VS */}
+          <div className="text-lg font-bold text-slate-600">vs</div>
+
+          {/* Now */}
+          <div className="rounded-xl border border-white/10 bg-white/5 p-4 text-center">
+            <span className="mb-2 block text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">
+              Now
+            </span>
+            <div
+              className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-lg text-lg font-bold"
+              style={{
+                backgroundColor: currentColor.light,
+                color: currentColor.primary,
+              }}
+            >
+              {currentType.number}
+            </div>
+            <p className="font-semibold text-white">
+              {currentType.name}
+            </p>
+            <p className="text-xs text-slate-400">
+              The {currentType.headline}
+            </p>
+            <p className="mt-1 text-xs text-slate-500">
+              {currentResult.confidence >= 0.15
+                ? "Confident"
+                : "Mixed"}
+            </p>
+          </div>
+        </div>
+
+        {/* ── Shift message ────────────────────────────── */}
+        <div className="mb-6 text-center text-sm text-slate-300">
+          {isSameType ? (
+            <span>✨ Your type hasn&apos;t changed</span>
+          ) : (
+            <span>
+              📈 You shifted from{" "}
+              <span style={{ color: pastColor.primary }}>
+                {pastType.name}
+              </span>{" "}
+              to{" "}
+              <span style={{ color: currentColor.primary }}>
+                {currentType.name}
+              </span>
+            </span>
+          )}
+        </div>
+
+        {/* ── Score comparison bars ────────────────────── */}
+        <h4 className="mb-4 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">
+          Score Comparison
+        </h4>
+
+        <div className="space-y-4">
+          {comparisonBars.map((bar) => (
+            <div key={bar.typeId}>
+              <div className="mb-1 flex items-center justify-between text-xs">
+                <span className="font-medium text-slate-300">
+                  {bar.number}. {bar.name}
+                </span>
+                <span className="text-slate-500">
+                  {bar.pastScore}% vs {bar.currentScore}%
+                </span>
+              </div>
+              <div className="space-y-1">
+                {/* Past bar — lighter, top */}
+                <div
+                  className="h-1.5 rounded-full opacity-50"
+                  style={{
+                    width: `${(bar.pastScore / maxBarScore) * 100}%`,
+                    backgroundColor: pastColor.primary,
+                  }}
+                />
+                {/* Current bar — solid, bottom */}
+                <div
+                  className="h-1.5 rounded-full"
+                  style={{
+                    width: `${(bar.currentScore / maxBarScore) * 100}%`,
+                    backgroundColor: currentColor.primary,
+                  }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
 // ── ProfileDashboard Component ────────────────────────
 
 /**
@@ -259,6 +469,10 @@ export default function ProfileDashboard({
 
   /* ── Confirmation dialog state ─────────────────────────────── */
   const [showConfirm, setShowConfirm] = useState(false);
+
+  /* ── Past results state ─────────────────────────────────────── */
+  const [history] = useState<QuizResult[]>(() => loadHistory());
+  const [compareResult, setCompareResult] = useState<QuizResult | null>(null);
 
   /* ── Fail-fast guard ────────────────────────────────────────── */
   if (!typeFull || !typeColor || !visuals) {
@@ -567,7 +781,74 @@ export default function ProfileDashboard({
       </ProfileSection>
 
       {/* ────────────────────────────────────────────────────────── */}
-      {/* SECTION 6: Share + Actions                                */}
+      {/* SECTION 6: Past Results / History                         */}
+      {/* ────────────────────────────────────────────────────────── */}
+      {history.length > 0 && (
+        <ProfileSection>
+          <div className="mb-6 flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-bold uppercase tracking-widest text-white">
+                📜 Your Journey
+              </h3>
+              <p className="mt-1 text-xs text-slate-500">
+                Past quiz results
+              </p>
+            </div>
+          </div>
+
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="space-y-3"
+          >
+            {history.map((pastResult, i) => {
+              const typeInfo = getTypeFull(pastResult.primary.typeId);
+              const histColor = getTypeColor(pastResult.primary.typeId);
+              return (
+                <motion.button
+                  key={i}
+                  variants={staggerItem}
+                  onClick={() => setCompareResult(pastResult)}
+                  className="flex w-full items-center gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-left transition-colors hover:bg-white/[0.07]"
+                >
+                  {/* Small type number badge */}
+                  <div
+                    className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-lg font-bold"
+                    style={{
+                      backgroundColor: histColor.light,
+                      color: histColor.primary,
+                    }}
+                  >
+                    {typeInfo.number}
+                  </div>
+
+                  <div className="min-w-0 flex-1">
+                    <p className="font-semibold text-white">
+                      {typeInfo.name}{" "}
+                      <span className="font-normal text-slate-400">
+                        — The {typeInfo.headline}
+                      </span>
+                    </p>
+                    <p className="text-sm text-slate-500">
+                      {pastResult.confidence >= 0.15
+                        ? "Confident"
+                        : "Mixed"}{" "}
+                      result
+                    </p>
+                  </div>
+
+                  <span className="text-lg text-slate-600">→</span>
+                </motion.button>
+              );
+            })}
+          </motion.div>
+        </ProfileSection>
+      )}
+
+      {/* ────────────────────────────────────────────────────────── */}
+      {/* SECTION 7: Share + Actions                                */}
       {/* ────────────────────────────────────────────────────────── */}
       <ProfileSection>
         <h3 className="mb-6 text-center text-sm font-bold uppercase tracking-widest text-white">
@@ -664,6 +945,17 @@ export default function ProfileDashboard({
         onCancel={() => setShowConfirm(false)}
         accentColor={typeColor.primary}
       />
+
+      {/* ── Comparison Overlay (rendered at root for overlay) ──── */}
+      <AnimatePresence>
+        {compareResult && (
+          <ComparisonOverlay
+            pastResult={compareResult}
+            currentResult={result}
+            onClose={() => setCompareResult(null)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
