@@ -3,11 +3,11 @@
 import React, { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { quizQuestions } from "@/data/enneagram";
-import { scoreQuiz, type QuizScore } from "@/lib/enneagram";
+import { scoreQuiz, type QuizResult } from "@/lib/scoring-engine";
 import { ChevronRight, ChevronLeft, Sparkles } from "lucide-react";
 
 interface OrbitQuizProps {
-  onComplete: (score: QuizScore) => void;
+  onComplete: (result: QuizResult) => void;
 }
 
 export default function OrbitQuiz({ onComplete }: OrbitQuizProps) {
@@ -41,7 +41,7 @@ export default function OrbitQuiz({ onComplete }: OrbitQuizProps) {
     }
   }
 
-  const variants = {
+  const variants: any = {
     enter: (direction: number) => ({
       x: direction > 0 ? 500 : -500,
       opacity: 0,

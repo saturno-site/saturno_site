@@ -4,20 +4,21 @@ import React, { useState } from "react";
 import OrbitQuiz from "@/components/analyzer/OrbitQuiz";
 import AiChatSession from "@/components/analyzer/AiChatSession";
 import ChronosReport from "@/components/analyzer/ChronosReport";
-import { type QuizScore } from "@/lib/enneagram";
+import { type QuizResult } from "@/lib/scoring-engine";
 import { motion, AnimatePresence } from "framer-motion";
 
 type Act = "orbit" | "deep-dive" | "chronos";
 
 export default function AnalyzerPage() {
   const [currentAct, setCurrentAct] = useState<Act>("orbit");
-  const [quizData, setQuizData] = useState<QuizScore | null>(null);
+  const [quizData, setQuizData] = useState<QuizResult | null>(null);
   const [chatHistory, setChatHistory] = useState<any[]>([]);
 
-  function handleQuizComplete(score: QuizScore) {
-    setQuizData(score);
+  function handleQuizComplete(result: QuizResult) {
+    setQuizData(result);
     setCurrentAct("deep-dive");
   }
+
 
   function handleChatComplete(history: any[]) {
     setChatHistory(history);

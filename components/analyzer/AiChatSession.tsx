@@ -3,10 +3,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, Sparkles, User, Brain } from "lucide-react";
-import { type QuizScore } from "@/lib/enneagram";
+import { type QuizResult } from "@/lib/scoring-engine";
 
 interface AiChatSessionProps {
-  quizData: QuizScore;
+  quizData: QuizResult;
   onComplete: (history: any[]) => void;
 }
 
