@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Saturno Landing Page Demo
 
-## Getting Started
+A simple Next.js landing page demo built for client review.
 
-First, run the development server:
+## Preview locally
 
 ```bash
+cd saturno
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## What is included
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Clean hero section with messaging and actions
+- Feature highlights for easy client review
+- Responsive Tailwind CSS styling
+- Fast customization for brand copy, colors, and links
 
-## Learn More
+## Next steps
 
-To learn more about Next.js, take a look at the following resources:
+- Replace the demo text with your product messaging
+- Update the contact link to your preferred email or scheduling tool
+- Add brand visuals or logos in `public/`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deploy
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This app can be deployed with Vercel, Netlify, or any platform that supports Next.js.
 
-## Deploy on Vercel
+### Map to `saturnosesouza.com`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Deploy the `saturno` folder to Vercel or another Next.js host.
+2. In your hosting dashboard, add `saturnosesouza.com` as a custom domain.
+3. Set the domain's DNS A / CNAME records to the host's values.
+4. Wait for DNS propagation and verify the site loads at `https://saturnosesouza.com`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+If you want, I can also help create a Vercel project config or generate the exact DNS record values once you choose a host.

@@ -2,6 +2,7 @@
   "name": "saturno",
   "version": "0.1.0",
   "private": true,
+  "description": "Saturno landing page demo for client review.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
