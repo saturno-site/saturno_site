@@ -2,17 +2,17 @@ import Link from "next/link";
 
 const features = [
   {
-    title: "Discover your Enneagram type",
+    title: "Animated cosmic quiz experience",
     description:
       "A playful personality test experience with concise insights and growth prompts.",
   },
   {
-    title: "Modern visual storytelling",
+    title: "Deep Enneagram insights with triads, wings & growth paths",
     description:
       "Responsive cards, motion-ready layout, and brand-friendly contrast for every screen.",
   },
   {
-    title: "Built for fast iteration",
+    title: "Moment-of-truth reveal with particle celebration",
     description:
       "Clear content, reusable quiz components, and production-ready automation for every release.",
   },
@@ -38,7 +38,7 @@ export default function Home() {
               href="/quiz"
               className="inline-flex items-center justify-center rounded-full bg-slate-950 px-8 py-4 text-base font-semibold text-white transition hover:bg-slate-800"
             >
-              Start the quiz
+              Discover your archetype
             </Link>
             <a
               href="mailto:hello@example.com"
@@ -71,9 +71,9 @@ export default function Home() {
               From the first question to the final result, the quiz experience is crafted to feel playful, trustworthy, and easy to complete.
             </p>
             <div className="flex flex-wrap gap-4">
-              <span className="rounded-full bg-white/10 px-4 py-2 text-sm text-slate-200">Interactive quiz flow</span>
-              <span className="rounded-full bg-white/10 px-4 py-2 text-sm text-slate-200">Type-based insights</span>
-              <span className="rounded-full bg-white/10 px-4 py-2 text-sm text-slate-200">Fast client feedback</span>
+              <span className="rounded-full bg-white/10 px-4 py-2 text-sm text-slate-200">Animated cosmic quiz experience</span>
+              <span className="rounded-full bg-white/10 px-4 py-2 text-sm text-slate-200">Deep Enneagram insights with triads, wings & growth paths</span>
+              <span className="rounded-full bg-white/10 px-4 py-2 text-sm text-slate-200">Moment-of-truth reveal with particle celebration</span>
             </div>
           </div>
           <div className="rounded-[2rem] bg-white p-8 text-slate-950 shadow-xl shadow-slate-200/70">
