@@ -13,6 +13,8 @@ import {
 } from "@/data/enneagram-system";
 import { springTransition, bouncyTransition } from "@/lib/animations";
 import ParticleBurst from "@/components/quiz/ParticleBurst";
+import { TypeCharacter } from "@/components/characters";
+import { EnneagramBoard } from "@/components/board";
 import type { QuizResult } from "@/lib/scoring-engine";
 
 /* ------------------------------------------------------------------ */
@@ -625,6 +627,39 @@ export default function ResultReveal({
               </div>
             </motion.div>
 
+            {/* ── Type Character ──────────────────────────────── */}
+            {(stage === "revealing" || stage === "celebrating" || stage === "complete") && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.5, y: 30 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 200,
+                  damping: 15,
+                  delay: 0.8,
+                }}
+                className="mt-8 flex justify-center"
+              >
+                <div className="relative">
+                  <TypeCharacter
+                    typeId={result.primary.typeId}
+                    animation="enter"
+                    size={160}
+                    className="drop-shadow-2xl"
+                  />
+                  {/* Glow ring behind character */}
+                  <div
+                    className="pointer-events-none absolute inset-0 rounded-full opacity-30 blur-3xl"
+                    style={{
+                      background: typeColors[result.primary.typeId].primary,
+                      transform: "scale(1.4)",
+                    }}
+                    aria-hidden="true"
+                  />
+                </div>
+              </motion.div>
+            )}
+
             {/* ── Continue button ──────────────────────────────── */}
             {stage === "complete" && (
               <motion.div
@@ -653,6 +688,31 @@ export default function ResultReveal({
                     <path d="M5 12h14M12 5l7 7-7 7" />
                   </svg>
                 </button>
+              </motion.div>
+            )}
+
+            {/* ── Enneagram Board ──────────────────────────────── */}
+            {stage === "complete" && (
+              <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  ...springTransition,
+                  delay: 0.6,
+                }}
+                className="mt-10"
+              >
+                <div className="mb-4 text-center">
+                  <span className="text-sm font-semibold uppercase tracking-[0.2em] text-white/60">
+                    Explore the Enneagram
+                  </span>
+                </div>
+                <EnneagramBoard
+                  selectedType={result.primary.typeId}
+                  onSelectType={() => {}}
+                  mode="explore"
+                  className="mx-auto max-w-[320px]"
+                />
               </motion.div>
             )}
           </motion.div>

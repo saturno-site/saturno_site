@@ -1,5 +1,52 @@
 {
   "HomePage": {
-    "welcome": "Bem-vindo ao Saturno"
+    "welcome": "Uma experiência moderna de teste de personalidade Eneagrama.",
+    "header": {
+      "superTitle": "Saturno",
+      "description": "Construa confiança, colete insights e ajude os visitantes a descobrir seu tipo de personalidade com um teste lúdico e uma narrativa moderna.",
+      "analyzerButton": "Iniciar Analisador IA",
+      "quizButton": "Teste Rápido"
+    },
+    "features": {
+      "cosmic": {
+        "title": "Experiência de quiz cósmico animado",
+        "description": "Uma experiência de teste de personalidade divertida com insights concisos e dicas de crescimento."
+      },
+      "insights": {
+        "title": "Insights profundos do Eneagrama com tríades, asas e caminhos de crescimento",
+        "description": "Cards responsivos, layout pronto para movimento e contraste amigável à marca para todas as telas."
+      },
+      "reveal": {
+        "title": "Revelação do momento da verdade com celebração de partículas",
+        "description": "Conteúdo claro, componentes de quiz reutilizáveis e automação pronta para produção para cada lançamento."
+      }
+    },
+    "cta": {
+      "superTitle": "Teste de personalidade de próximo nível",
+      "title": "Moderno, envolvente e projetado para fazer a descoberta da personalidade parecer fácil.",
+      "description": "Da primeira pergunta ao resultado final, a experiência do quiz é elaborada para ser divertida, confiável e fácil de completar.",
+      "tags": [
+        "Experiência de quiz cósmico animado",
+        "Insights profundos do Eneagrama com tríades, asas e caminhos de crescimento",
+        "Revelação do momento da verdade com celebração de partículas"
+      ]
+    },
+    "preview": {
+      "superTitle": "Pré-visualização do produto ao vivo",
+      "sections": {
+        "intro": {
+          "title": "Introdução ao Quiz",
+          "description": "Um teste de personalidade rápido que incentiva a curiosidade e convida os usuários a aprender mais sobre seu tipo de Eneagrama."
+        },
+        "highlights": {
+          "title": "Destaques dos Resultados",
+          "description": "Dicas de crescimento personalizadas, pontos fortes do tipo e sugestões de próximos passos para um envolvimento significativo."
+        },
+        "deploy": {
+          "title": "Pronto para implantação",
+          "description": "Inclui fluxos de trabalho automatizados de build, lint, teste e implantação em produção na Vercel."
+        }
+      }
+    }
   }
 }
