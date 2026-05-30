@@ -13,22 +13,22 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://saturnosesouza.com"),
-  title: "Saturno | Landing Page Demo",
+  metadataBase: new URL("https://saturnodesouza.com"),
+  title: "Saturno | Enneagram Personality Test",
   description:
-    "A polished landing page demo for client feedback, built with Next.js and Tailwind CSS.",
+    "A modern Enneagram personality test experience designed to help visitors discover their type and growth path.",
   openGraph: {
-    title: "Saturno | Landing Page Demo",
+    title: "Saturno | Enneagram Personality Test",
     description:
-      "A polished landing page demo for client feedback, built with Next.js and Tailwind CSS.",
+      "A modern Enneagram personality test experience designed to help visitors discover their type and growth path.",
     type: "website",
-    url: "https://saturnosesouza.com",
+    url: "https://saturnodesouza.com",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Saturno | Landing Page Demo",
+    title: "Saturno | Enneagram Personality Test",
     description:
-      "A polished landing page demo for client feedback, built with Next.js and Tailwind CSS.",
+      "A modern Enneagram personality test experience designed to help visitors discover their type and growth path.",
   },
 };
 

@@ -1,8 +1,8 @@
-# Saturno Landing Page Demo
+# Saturno Enneagram Experience
 
-A simple Next.js landing page demo built for client review.
+A modern Enneagram personality test built with Next.js, Tailwind CSS, and Vercel deployment automation.
 
-## Preview locally
+## Local development
 
 ```bash
 cd saturno
@@ -12,28 +12,45 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## What is included
+## What’s included
 
-- Clean hero section with messaging and actions
-- Feature highlights for easy client review
-- Responsive Tailwind CSS styling
-- Fast customization for brand copy, colors, and links
+- Interactive Enneagram personality quiz experience
+- Responsive Tailwind CSS brand system
+- Clean landing page with quiz CTA and product storytelling
+- Automated build, lint, typecheck, and test workflows
+- Production-ready Vercel configuration
 
-## Next steps
+## Production automation
 
-- Replace the demo text with your product messaging
-- Update the contact link to your preferred email or scheduling tool
-- Add brand visuals or logos in `public/`
+This project is ready for automated production deployments with Vercel and GitHub Actions.
 
-## Deploy
+### Available commands
 
-This app can be deployed with Vercel, Netlify, or any platform that supports Next.js.
+```bash
+npm run dev
+npm run build
+npm run lint
+npm run typecheck
+npm run test
+```
 
-### Map to `saturnosesouza.com`
+### GitHub Actions CI
 
-1. Deploy the `saturno` folder to Vercel or another Next.js host.
-2. In your hosting dashboard, add `saturnosesouza.com` as a custom domain.
-3. Set the domain's DNS A / CNAME records to the host's values.
-4. Wait for DNS propagation and verify the site loads at `https://saturnosesouza.com`.
+A workflow is configured to run on push and pull request events. It installs dependencies, lints the code, type-checks, builds the app, and runs unit tests.
 
-If you want, I can also help create a Vercel project config or generate the exact DNS record values once you choose a host.
+## Deployment
+
+The Vercel project should deploy from the `saturno/` folder.
+
+### Custom domain
+
+1. Add `saturnodesouza.com` to the Vercel project.
+2. Configure DNS records per Vercel’s instructions.
+3. Verify the site loads at `https://saturnodesouza.com`.
+
+## Next product work
+
+- Add type-specific growth stories and sharing actions
+- Add analytics for quiz completion and conversion tracking
+- Improve quiz UX with animations and onboarding guidance
+- Add branding visuals, hero illustration, and social proof
