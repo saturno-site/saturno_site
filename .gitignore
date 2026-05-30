@@ -39,3 +39,16 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Hermes project context
+# Version compact docs/skills/memory/plans under .hermes/.
+# Ignore volatile/private local runtime artifacts.
+.hermes/**/.cache/
+.hermes/**/cache/
+.hermes/**/tmp/
+.hermes/**/temp/
+.hermes/**/logs/
+.hermes/**/sessions/
+.hermes/**/*.local.*
+.hermes/**/private*
+.hermes/**/secrets*
