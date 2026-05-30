@@ -15,6 +15,7 @@ import type { CosmicMood } from "@/components/quiz/CosmicBackground";
 import { quizQuestions } from "@/data/enneagram";
 import { scoreQuiz, getTypeColor } from "@/lib/scoring-engine";
 import type { QuizResult } from "@/lib/scoring-engine";
+import { saveQuizResult } from "@/lib/quizStorage";
 
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
@@ -117,9 +118,10 @@ export default function QuizApp() {
 
       setCurrentIndex(nextIndex);
     } else {
-      /* ── Quiz complete — score and reveal ────────────────────── */
+      /* ── Quiz complete — score, persist, and reveal ──────────── */
       const quizResult = scoreQuiz(answers);
       setResult(quizResult);
+      saveQuizResult(quizResult);
       setPhase("revealing");
     }
   }, [currentIndex, answers, breakCount, totalQuestions]);
