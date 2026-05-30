@@ -1,31 +1,42 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { quizQuestions } from "@/data/enneagram";
 import { scoreQuiz, type QuizResult } from "@/lib/scoring-engine";
 import { ChevronRight, ChevronLeft, Sparkles } from "lucide-react";
+import { useSound } from "@/components/analyzer/SoundProvider";
+import AnimatedIcon from "@/components/analyzer/icons/AnimatedIcon";
+import TypeGlyph from "@/components/analyzer/icons/TypeGlyph";
+import type { EnneagramTypeId } from "@/data/enneagram-system";
 
 interface OrbitQuizProps {
   onComplete: (result: QuizResult) => void;
+}
+
+function strongestType(weights: Partial<Record<EnneagramTypeId, number>>): EnneagramTypeId {
+  return (Object.entries(weights).sort(([, a], [, b]) => (b ?? 0) - (a ?? 0))[0]?.[0] as EnneagramTypeId) ?? "nine";
 }
 
 export default function OrbitQuiz({ onComplete }: OrbitQuizProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [direction, setDirection] = useState(0); // For slide animations
+  const { play } = useSound();
 
   const currentQuestion = quizQuestions[currentIndex];
 
   const progress = ((currentIndex + 1) / quizQuestions.length) * 100;
 
   function handleSelect(answerId: string) {
+    play("select");
     const newAnswers = { ...answers, [currentQuestion.id]: answerId };
     setAnswers(newAnswers);
     
     // Auto-advance after a brief delay for better flow
     setTimeout(() => {
       if (currentIndex < quizQuestions.length - 1) {
+        play("advance");
         setDirection(1);
         setCurrentIndex(currentIndex + 1);
       } else {
@@ -36,12 +47,13 @@ export default function OrbitQuiz({ onComplete }: OrbitQuizProps) {
 
   function handleBack() {
     if (currentIndex > 0) {
+      play("advance");
       setDirection(-1);
       setCurrentIndex(currentIndex - 1);
     }
   }
 
-  const variants: any = {
+  const variants = {
     enter: (direction: number) => ({
       x: direction > 0 ? 500 : -500,
       opacity: 0,
@@ -51,13 +63,13 @@ export default function OrbitQuiz({ onComplete }: OrbitQuizProps) {
       x: 0,
       opacity: 1,
       scale: 1,
-      transition: { duration: 0.4, ease: "easeOut" },
+      transition: { duration: 0.4, ease: "easeOut" as const },
     },
     exit: (direction: number) => ({
       x: direction < 0 ? 500 : -500,
       opacity: 0,
       scale: 0.9,
-      transition: { duration: 0.3, ease: "easeIn" },
+      transition: { duration: 0.3, ease: "easeIn" as const },
     }),
   };
 
@@ -73,7 +85,7 @@ export default function OrbitQuiz({ onComplete }: OrbitQuizProps) {
         {/* Header */}
         <div className="mb-8 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-indigo-400" />
+            <AnimatedIcon icon={Sparkles} className="h-5 w-5 text-indigo-400" spin />
             <span className="text-sm font-medium uppercase tracking-[0.2em] text-slate-400">
               Act I: The Orbit
             </span>
@@ -112,26 +124,31 @@ export default function OrbitQuiz({ onComplete }: OrbitQuizProps) {
               <div className="grid gap-4 sm:grid-cols-1">
                 {currentQuestion.answers.map((answer) => {
                   const isSelected = answers[currentQuestion.id] === answer.id;
+                  const glyphType = strongestType(answer.weights);
                   return (
                     <button
                       key={answer.id}
                       onClick={() => handleSelect(answer.id)}
-                      className={`group relative overflow-hidden rounded-2xl border p-6 text-left transition-all duration-300 ${
+                      onMouseEnter={() => play("hover")}
+                      className={`group relative overflow-hidden rounded-2xl border p-6 text-left transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 ${
                         isSelected
                           ? "border-indigo-500 bg-indigo-500/10"
                           : "border-slate-800 bg-slate-900/50 hover:border-slate-600 hover:bg-slate-800"
                       }`}
                     >
-                      <div className="relative z-10 flex items-center justify-between">
+                      <div className="relative z-10 flex items-center justify-between gap-4">
                         <span className="text-lg font-light text-slate-200 group-hover:text-white">
                           {answer.label}
                         </span>
-                        {isSelected && (
-                          <motion.div
-                            layoutId="check"
-                            className="h-2 w-2 rounded-full bg-indigo-400 shadow-[0_0_10px_rgba(129,140,248,0.8)]"
-                          />
-                        )}
+                        <div className="flex items-center gap-3">
+                          <TypeGlyph type={glyphType} className="h-7 w-7 opacity-70 transition group-hover:opacity-100" active={isSelected} />
+                          {isSelected && (
+                            <motion.div
+                              layoutId="check"
+                              className="h-2 w-2 rounded-full bg-indigo-400 shadow-[0_0_10px_rgba(129,140,248,0.8)]"
+                            />
+                          )}
+                        </div>
                       </div>
                     </button>
                   );
@@ -146,13 +163,14 @@ export default function OrbitQuiz({ onComplete }: OrbitQuizProps) {
           <button
             onClick={handleBack}
             disabled={currentIndex === 0}
-            className="flex items-center gap-2 text-sm font-medium text-slate-400 transition hover:text-white disabled:opacity-30"
+            className="flex items-center gap-2 text-sm font-medium text-slate-400 transition hover:text-white disabled:opacity-30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
           >
-            <ChevronLeft className="h-4 w-4" />
+            <AnimatedIcon icon={ChevronLeft} className="h-4 w-4" />
             Previous
           </button>
           
-          <div className="text-xs text-slate-500">
+          <div className="flex items-center gap-2 text-xs text-slate-500">
+            <AnimatedIcon icon={ChevronRight} className="h-3 w-3 text-indigo-400" />
             {currentIndex + 1} of {quizQuestions.length}
           </div>
         </div>

@@ -6,7 +6,9 @@ Stable facts:
 - UX target: cosmic self-discovery game, not generic questionnaire.
 - Stack: Next.js 16, React 19, TypeScript, Tailwind CSS 4, Vitest.
 - Local project skill: `.hermes/skills/saturno-enneagram-web/SKILL.md`.
-- Main plan: `docs/plans/2026-05-30-modern-enneagram-experience.md`.
+- Main broad plan: `docs/plans/2026-05-30-modern-enneagram-experience.md`.
+- Active analyzer plan: `docs/plans/2026-05-30-analyzer-3d-sound-experience.md`.
+- Analyzer enhancement scope: `/analyzer` only; `/quiz`, scoring engine, question content, and AI report API contract stay unchanged.
 
 Working rules:
 - Caveman mode by default: concise, action-first, no filler.

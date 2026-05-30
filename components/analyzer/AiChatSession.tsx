@@ -4,18 +4,24 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, Sparkles, User, Brain } from "lucide-react";
 import { type QuizResult } from "@/lib/scoring-engine";
+import { useSound } from "@/components/analyzer/SoundProvider";
+import AnimatedIcon from "@/components/analyzer/icons/AnimatedIcon";
 
 interface AiChatSessionProps {
   quizData: QuizResult;
-  onComplete: (history: any[]) => void;
+  onComplete: (history: ChatHistoryItem[]) => void;
 }
+
+type ChatPart = { text: string };
+type ChatHistoryItem = { role: string; parts: ChatPart[] };
 
 export default function AiChatSession({ quizData, onComplete }: AiChatSessionProps) {
   const [messages, setMessages] = useState<{ role: string; text: string }[]>([]);
-  const [history, setHistory] = useState<any[]>([]);
+  const [history, setHistory] = useState<ChatHistoryItem[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { play } = useSound();
 
   // Initialize the session
   useEffect(() => {
@@ -29,6 +35,7 @@ export default function AiChatSession({ quizData, onComplete }: AiChatSessionPro
         const data = await res.json();
         setMessages([{ role: "model", text: data.text }]);
         setHistory(data.history);
+        play("message");
       } catch (error) {
         console.error("Failed to start AI session", error);
       } finally {
@@ -36,7 +43,7 @@ export default function AiChatSession({ quizData, onComplete }: AiChatSessionPro
       }
     }
     startSession();
-  }, [quizData]);
+  }, [quizData, play]);
 
   // Scroll to bottom
   useEffect(() => {
@@ -51,6 +58,7 @@ export default function AiChatSession({ quizData, onComplete }: AiChatSessionPro
     const userMessage = input.trim();
     setInput("");
     setMessages((prev) => [...prev, { role: "user", text: userMessage }]);
+    play("message");
     setIsLoading(true);
 
     try {
@@ -65,6 +73,7 @@ export default function AiChatSession({ quizData, onComplete }: AiChatSessionPro
       });
       const data = await res.json();
       setMessages((prev) => [...prev, { role: "model", text: data.text }]);
+      play("message");
       setHistory((prev) => [
         ...prev,
         { role: "user", parts: [{ text: userMessage }] },
@@ -82,17 +91,24 @@ export default function AiChatSession({ quizData, onComplete }: AiChatSessionPro
       {/* Header */}
       <div className="flex items-center justify-between border-b border-slate-800 bg-slate-900/50 p-6">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-500/20 text-indigo-400">
-            <Brain className="h-6 w-6" />
-          </div>
+          <motion.div
+            animate={{ boxShadow: ["0 0 0 rgba(99,102,241,0)", "0 0 28px rgba(99,102,241,0.35)", "0 0 0 rgba(99,102,241,0)"] }}
+            transition={{ duration: 2.4, repeat: Infinity }}
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-500/20 text-indigo-400"
+          >
+            <AnimatedIcon icon={Brain} className="h-6 w-6" spin />
+          </motion.div>
           <div>
             <h3 className="font-semibold text-slate-100">The Analyzer</h3>
             <p className="text-xs text-slate-400 uppercase tracking-widest">Act II: Deep Dive</p>
           </div>
         </div>
         <button
-          onClick={() => onComplete(history)}
-          className="rounded-full bg-indigo-600 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-indigo-500"
+          onClick={() => {
+            play("advance");
+            onComplete(history);
+          }}
+          className="rounded-full bg-indigo-600 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-indigo-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
         >
           Generate Report
         </button>
@@ -118,7 +134,7 @@ export default function AiChatSession({ quizData, onComplete }: AiChatSessionPro
                     msg.role === "user" ? "bg-slate-700" : "bg-indigo-900/50 text-indigo-300"
                   }`}
                 >
-                  {msg.role === "user" ? <User className="h-4 w-4" /> : <Sparkles className="h-4 w-4" />}
+                  {msg.role === "user" ? <AnimatedIcon icon={User} className="h-4 w-4" /> : <AnimatedIcon icon={Sparkles} className="h-4 w-4" spin />}
                 </div>
                 <div
                   className={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${
@@ -134,10 +150,10 @@ export default function AiChatSession({ quizData, onComplete }: AiChatSessionPro
           ))}
           {isLoading && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start">
-              <div className="ml-11 flex gap-1">
-                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-indigo-500 [animation-delay:-0.3s]" />
-                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-indigo-500 [animation-delay:-0.15s]" />
-                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-indigo-500" />
+              <div className="ml-11 flex items-center gap-1 rounded-full border border-indigo-500/20 bg-indigo-500/10 px-3 py-2">
+                <motion.span animate={{ y: [0, -4, 0] }} transition={{ duration: 0.8, repeat: Infinity }} className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
+                <motion.span animate={{ y: [0, -4, 0] }} transition={{ duration: 0.8, repeat: Infinity, delay: 0.12 }} className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
+                <motion.span animate={{ y: [0, -4, 0] }} transition={{ duration: 0.8, repeat: Infinity, delay: 0.24 }} className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
               </div>
             </motion.div>
           )}
@@ -158,9 +174,10 @@ export default function AiChatSession({ quizData, onComplete }: AiChatSessionPro
           <button
             onClick={handleSend}
             disabled={isLoading || !input.trim()}
-            className="absolute right-2 top-2 h-10 w-10 flex items-center justify-center rounded-xl bg-indigo-600 text-white transition hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="absolute right-2 top-2 h-10 w-10 flex items-center justify-center rounded-xl bg-indigo-600 text-white transition hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
+            aria-label="Send message"
           >
-            <Send className="h-5 w-5" />
+            <AnimatedIcon icon={Send} className="h-5 w-5" decorative={false} label="Send message" />
           </button>
         </div>
         <p className="mt-3 text-center text-[10px] text-slate-500 uppercase tracking-[0.2em]">
