@@ -34,6 +34,10 @@ Write updates there when project-specific facts/plans should persist without blo
 
 Canonical project context lives inside the git repo at `saturno/.hermes/`; parent-level context is wrapper/pointer only. See `references/project-context-versioning.md` for the versioning pattern, recommended layout, gitignore policy, and Hermes `skills.external_dirs` verification.
 
+For modern Enneagram research/planning/analyzer work, see `references/modern-enneagram-experience-planning.md` for session-derived product direction, analyzer constraints, and Andre-specific reporting style.
+
+For the implemented `/analyzer` 3D + sound pattern, see `references/analyzer-3d-sound-implementation.md` for dependency choices, R3F/Web Audio guardrails, wiring points, verification, and pitfalls.
+
 ## Product goal
 
 Build a premium, animated Enneagram personality-test experience.
@@ -55,12 +59,27 @@ Concept: `Saturno Type Orbit`
 
 ## Repo paths
 
-- Plan: `docs/plans/2026-05-30-modern-enneagram-experience.md`
-- Quiz UI: `components/quiz/QuizApp.tsx`
-- Data: `data/enneagram.ts`
-- Scoring: `lib/enneagram.ts`
+- Broad plan: `docs/plans/2026-05-30-modern-enneagram-experience.md`
+- Analyzer 3D/sound plan: `docs/plans/2026-05-30-analyzer-3d-sound-experience.md`
+- Analyzer shell: `app/analyzer/page.tsx`
+- Analyzer Act I: `components/analyzer/OrbitQuiz.tsx`
+- Analyzer Act II: `components/analyzer/AiChatSession.tsx`
+- Analyzer Act III: `components/analyzer/ChronosReport.tsx`
+- Analyzer API: `app/api/analyzer/route.ts`
+- Analyzer scoring engine: `lib/scoring-engine.ts`
+- Quick Test UI: `components/quiz/QuizApp.tsx`
+- Quick Test data/scoring: `data/enneagram.ts`, `lib/enneagram.ts`
 - Existing tests: `tests/enneagram.test.ts`
 - Landing page: `app/page.tsx`
+
+## Analyzer 3D + sound rules
+
+- `/analyzer` upgrades must not change `/quiz` unless requested.
+- Preserve question data, scoring logic, and AI report API contract unless the task explicitly targets them.
+- Use client-only dynamic R3F imports; never import `three`/R3F into server components.
+- Use procedural type avatars unless real GLB character art exists.
+- Use Web Audio API synthesized cues, muted by default, initialized only after user gesture.
+- Always keep reduced-motion/static fallback paths for 3D-heavy scenes.
 
 ## Next.js warning
 
@@ -68,15 +87,13 @@ This project uses Next.js 16 / React 19. Before uncertain Next API work, inspect
 
 ## Implementation order
 
-1. Read the plan.
+1. Read the active project-local plan.
 2. Check current git status; do not overwrite user changes.
-3. Update tests first for scoring/data work.
-4. Expand Enneagram data contract.
-5. Upgrade scoring engine.
-6. Split quiz components.
-7. Add animation components.
-8. Build result reveal.
-9. Run verification.
+3. For scoring/data work: update tests first, expand data contract, upgrade scoring engine.
+4. For `/analyzer` presentation work: preserve logic/contracts first, then add provider/lazy boundaries, then wire components.
+5. Add animation/3D components behind fallbacks.
+6. Build reveal/report UI.
+7. Run verification.
 
 ## Verification
 

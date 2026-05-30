@@ -5,6 +5,7 @@
   "description": "Saturno brand experience for a modern Enneagram personality test.",
   "scripts": {
     "dev": "next dev",
+    "dev:gcloud": "dotenv -e .env.gcloud.local next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --ext .ts,.tsx",
@@ -31,6 +32,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
     "jsdom": "^29.1.1",
