@@ -1,60 +1,120 @@
 import { NextRequest, NextResponse } from "next/server";
-import { generativeModel } from "@/lib/ai/vertex-client";
+import {
+  type AnalyzerHistory,
+  generateAnalyzerText,
+  sendAnalyzerChatMessage,
+} from "@/lib/ai/vertex-client";
+
+export const runtime = "nodejs";
+
+const reportSchema = {
+  type: "object",
+  properties: {
+    type: { type: "string" },
+    wing: { type: "string" },
+    summary: { type: "string" },
+    historicalFigures: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          name: { type: "string" },
+          reason: { type: "string" },
+        },
+        required: ["name", "reason"],
+        additionalProperties: false,
+      },
+      minItems: 3,
+      maxItems: 3,
+    },
+    growthPrompt: { type: "string" },
+  },
+  required: ["type", "wing", "summary", "historicalFigures", "growthPrompt"],
+  additionalProperties: false,
+};
+
+function isObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function asHistory(value: unknown): AnalyzerHistory {
+  if (!Array.isArray(value)) return [];
+
+  return value.filter((item): item is AnalyzerHistory[number] => {
+    if (!isObject(item)) return false;
+    if (item.role !== "user" && item.role !== "model") return false;
+    if (!Array.isArray(item.parts)) return false;
+    return item.parts.every((part) => isObject(part) && typeof part.text === "string");
+  });
+}
+
+function textFromResponse(raw: string | undefined) {
+  return raw?.trim() || "I need one more reflection before I can read the pattern clearly.";
+}
 
 export async function POST(req: NextRequest) {
   try {
-    const { action, quizData, message, history } = await req.json();
-
-    if (action === "start") {
-      // Start the deep dive session based on quiz results
-      const prompt = `I have completed the preliminary quiz. Here are my weighted scores: ${JSON.stringify(
-        quizData.breakdown
-      )}. 
-      Based on these scores, please analyze my profile and ask me one deep, probing question to help refine my type or identify my wing.`;
-
-      const result = await generativeModel.generateContent(prompt);
-      const response = result.response;
-      const text = response.candidates?.[0].content.parts[0].text;
-
-      return NextResponse.json({ text, history: [{ role: "user", parts: [{ text: prompt }] }, { role: "model", parts: [{ text }] }] });
+    const body = await req.json();
+    if (!isObject(body) || typeof body.action !== "string") {
+      return NextResponse.json({ error: "Invalid analyzer request" }, { status: 400 });
     }
 
-    if (action === "chat") {
-      // Continue the conversation
-      const chat = generativeModel.startChat({ history });
-      const result = await chat.sendMessage(message);
-      const response = result.response;
-      const text = response.candidates?.[0].content.parts[0].text;
+    if (body.action === "start") {
+      if (!isObject(body.quizData) || !isObject(body.quizData.breakdown)) {
+        return NextResponse.json({ error: "Missing quizData.breakdown" }, { status: 400 });
+      }
 
-      return NextResponse.json({ text });
+      const prompt = `Preliminary Saturno weighted scores: ${JSON.stringify(body.quizData.breakdown)}.
+Analyze the strongest and closest patterns. Ask exactly one deep, non-clinical question that helps refine likely core type or wing.`;
+
+      const text = textFromResponse(await generateAnalyzerText(prompt));
+      const history: AnalyzerHistory = [
+        { role: "user", parts: [{ text: prompt }] },
+        { role: "model", parts: [{ text }] },
+      ];
+
+      return NextResponse.json({ text, history });
     }
 
-    if (action === "report") {
-      // Generate the final Chronos Report
-      const prompt = `Based on our conversation and my quiz results, please generate a final "Chronos Report". 
-      1. Confirm my definitive Enneagram Type and Wing.
-      2. Provide a 2-3 sentence deeply insightful summary.
-      3. Name 3 famous historical figures who share this type and briefly explain why.
-      4. Provide a "Saturno Growth Prompt" for my type.
-      
-      Format the response as a clean JSON object with keys: "type", "wing", "summary", "historicalFigures" (array of {name, reason}), and "growthPrompt".`;
+    if (body.action === "chat") {
+      if (typeof body.message !== "string" || body.message.trim().length === 0) {
+        return NextResponse.json({ error: "Missing message" }, { status: 400 });
+      }
 
-      const chat = generativeModel.startChat({ history });
-      const result = await chat.sendMessage(prompt);
-      const response = result.response;
-      const text = response.candidates?.[0].content.parts[0].text;
+      const result = await sendAnalyzerChatMessage(asHistory(body.history), body.message.trim());
+      return NextResponse.json({ text: textFromResponse(result.text), history: result.history });
+    }
 
-      // Extract JSON from the response (Gemini might wrap it in markdown)
-      const jsonMatch = text?.match(/\{[\s\S]*\}/);
-      const report = jsonMatch ? JSON.parse(jsonMatch[0]) : { error: "Failed to generate structured report", raw: text };
+    if (body.action === "report") {
+      const history = asHistory(body.history);
+      const prompt = `Generate the final Saturno Chronos Report from this conversation.
+Requirements:
+1. Use likely/reflection language, not certainty.
+2. Include likely Enneagram type and wing.
+3. Include a 2-3 sentence insightful summary.
+4. Include exactly 3 historical archetypes/figures with short reasons.
+5. Include one practical Saturno Growth Prompt.
+Return only JSON matching the required schema.`;
 
-      return NextResponse.json({ report });
+      const result = await sendAnalyzerChatMessage(history, prompt, {
+        responseMimeType: "application/json",
+        responseJsonSchema: reportSchema,
+      });
+
+      try {
+        return NextResponse.json({ report: JSON.parse(result.text) });
+      } catch {
+        return NextResponse.json(
+          { error: "Failed to parse structured report", raw: result.text },
+          { status: 502 }
+        );
+      }
     }
 
     return NextResponse.json({ error: "Invalid action" }, { status: 400 });
   } catch (error: unknown) {
-    console.error("Analyzer API Error:", error);
     const message = error instanceof Error ? error.message : "Internal Server Error";
+    console.error("Analyzer API Error:", message);
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

@@ -38,6 +38,8 @@ For modern Enneagram research/planning/analyzer work, see `references/modern-enn
 
 For the implemented `/analyzer` 3D + sound pattern, see `references/analyzer-3d-sound-implementation.md` for dependency choices, R3F/Web Audio guardrails, wiring points, verification, and pitfalls.
 
+For route/runtime QA after layout, locale, or navigation changes, see `references/next-intl-routing-browser-qa.md` for the root-vs-locale layout pattern, next-intl `requestLocale` fallback, browser-smoke sequence, and analyzer backend error-state pitfall.
+
 ## Product goal
 
 Build a premium, animated Enneagram personality-test experience.
@@ -105,6 +107,15 @@ npm run build
 ```
 
 Use narrower checks while iterating, but final launch-impacting changes need all four.
+
+After layout, locale, navigation, or analyzer changes, also run browser QA against the dev server:
+- `/`, `/en`, `/pt`
+- EN/PT language switch
+- `/analyzer` Act I → Act II
+- `/quiz`, `/profile`, `/characters`
+- browser console plus dev-server logs
+
+See `references/next-intl-routing-browser-qa.md` for exact sequence and route-specific pitfalls.
 
 ## Current caveat
 

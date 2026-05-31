@@ -46,11 +46,13 @@ npm run build
 ```
 
 Then browser-smoke `/analyzer`:
-- page loads
+- page loads with no Next runtime overlay
 - sound toggle starts muted
 - Act I advances to Act II
+- if the AI backend fails, Act II shows a visible user-facing error instead of a blank/stuck state
 - final report path still calls the same API contract
 - no JS errors in console after refresh
+- inspect dev-server logs too; server-side Vertex/API failures may not appear as browser JS errors
 
 ## Pitfalls
 
