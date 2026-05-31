@@ -1,0 +1,53 @@
+{
+  "HomePage": {
+    "welcome": "A modern Enneagram personality test experience.",
+    "header": {
+      "superTitle": "Saturno",
+      "ownerAltText": "Photo of Saturno de Souza",
+      "description": "Build trust, collect insights, and help visitors discover their personality type with a playful test and modern storytelling.",
+      "analyzerButton": "Start AI Analyzer",
+      "quizButton": "Quick Test"
+    },
+    "features": {
+      "cosmic": {
+        "title": "Animated cosmic quiz experience",
+        "description": "A playful personality test experience with concise insights and growth prompts."
+      },
+      "insights": {
+        "title": "Deep Enneagram insights with triads, wings & growth paths",
+        "description": "Responsive cards, motion-ready layout, and brand-friendly contrast for every screen."
+      },
+      "reveal": {
+        "title": "Moment-of-truth reveal with particle celebration",
+        "description": "Clear content, reusable quiz components, and production-ready automation for every release."
+      }
+    },
+    "cta": {
+      "superTitle": "Next-level personality testing",
+      "title": "Modern, engaging, and designed to make personality discovery feel effortless.",
+      "description": "From the first question to the final result, the quiz experience is crafted to feel playful, trustworthy, and easy to complete.",
+      "tags": [
+        "Animated cosmic quiz experience",
+        "Deep Enneagram insights with triads, wings & growth paths",
+        "Moment-of-truth reveal with particle celebration"
+      ]
+    },
+    "preview": {
+      "superTitle": "Live product preview",
+      "sections": {
+        "intro": {
+          "title": "Quiz intro",
+          "description": "A fast personality test that encourages curiosity and invites users to learn more about their Enneagram type."
+        },
+        "highlights": {
+          "title": "Result highlights",
+          "description": "Personalized growth prompts, type strengths, and next-step suggestions for meaningful engagement."
+        },
+        "deploy": {
+          "title": "Deployment-ready",
+          "description": "Includes automated build, lint, test, and Vercel production deployment workflows."
+        }
+      }
+    }
+  }
+}

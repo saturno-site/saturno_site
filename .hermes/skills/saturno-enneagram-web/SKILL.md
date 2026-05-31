@@ -34,6 +34,16 @@ Write updates there when project-specific facts/plans should persist without blo
 
 Canonical project context lives inside the git repo at `saturno/.hermes/`; parent-level context is wrapper/pointer only. See `references/project-context-versioning.md` for the versioning pattern, recommended layout, gitignore policy, and Hermes `skills.external_dirs` verification.
 
+For modern Enneagram research/planning/analyzer work, see `references/modern-enneagram-experience-planning.md` for session-derived product direction, analyzer constraints, and Andre-specific reporting style.
+
+For the implemented `/analyzer` 3D + sound pattern, see `references/analyzer-3d-sound-implementation.md` for dependency choices, R3F/Web Audio guardrails, wiring points, verification, and pitfalls.
+
+For route/runtime QA after layout, locale, or navigation changes, see `references/next-intl-routing-browser-qa.md` for the root-vs-locale layout pattern, next-intl `requestLocale` fallback, browser-smoke sequence, and analyzer backend error-state pitfall.
+
+For production cleanup/hardening after feature work, see `references/production-cleanup-hardening.md` for dependency audit, Analyzer AI `@google/genai` migration, schema/config pitfalls, integrity-test patterns, production smoke, and review loop.
+
+For perfectionist Next.js code-quality/reference review, see `references/perfectionist-nextjs-code-review.md` for next-intl import pitfalls, stale-reference checks, locale-link review, asset/dependency cleanup discipline, and the “many issues” review sequence.
+
 ## Product goal
 
 Build a premium, animated Enneagram personality-test experience.
@@ -55,12 +65,27 @@ Concept: `Saturno Type Orbit`
 
 ## Repo paths
 
-- Plan: `docs/plans/2026-05-30-modern-enneagram-experience.md`
-- Quiz UI: `components/quiz/QuizApp.tsx`
-- Data: `data/enneagram.ts`
-- Scoring: `lib/enneagram.ts`
+- Broad plan: `docs/plans/2026-05-30-modern-enneagram-experience.md`
+- Analyzer 3D/sound plan: `docs/plans/2026-05-30-analyzer-3d-sound-experience.md`
+- Analyzer shell: `app/analyzer/page.tsx`
+- Analyzer Act I: `components/analyzer/OrbitQuiz.tsx`
+- Analyzer Act II: `components/analyzer/AiChatSession.tsx`
+- Analyzer Act III: `components/analyzer/ChronosReport.tsx`
+- Analyzer API: `app/api/analyzer/route.ts`
+- Analyzer scoring engine: `lib/scoring-engine.ts`
+- Quick Test UI: `components/quiz/QuizApp.tsx`
+- Quick Test data/scoring: `data/enneagram.ts`, `lib/enneagram.ts`
 - Existing tests: `tests/enneagram.test.ts`
 - Landing page: `app/page.tsx`
+
+## Analyzer 3D + sound rules
+
+- `/analyzer` upgrades must not change `/quiz` unless requested.
+- Preserve question data, scoring logic, and AI report API contract unless the task explicitly targets them.
+- Use client-only dynamic R3F imports; never import `three`/R3F into server components.
+- Use procedural type avatars unless real GLB character art exists.
+- Use Web Audio API synthesized cues, muted by default, initialized only after user gesture.
+- Always keep reduced-motion/static fallback paths for 3D-heavy scenes.
 
 ## Next.js warning
 
@@ -68,15 +93,14 @@ This project uses Next.js 16 / React 19. Before uncertain Next API work, inspect
 
 ## Implementation order
 
-1. Read the plan.
+1. Read the active project-local plan.
 2. Check current git status; do not overwrite user changes.
-3. Update tests first for scoring/data work.
-4. Expand Enneagram data contract.
-5. Upgrade scoring engine.
-6. Split quiz components.
-7. Add animation components.
-8. Build result reveal.
-9. Run verification.
+3. For code-quality/reference review: run `npm run lint` and `npm run typecheck` early, then inspect imports, locale links, package deps, asset paths, and stale docs/references before claiming cleanup is done.
+4. For scoring/data work: update tests first, expand data contract, upgrade scoring engine.
+5. For `/analyzer` presentation work: preserve logic/contracts first, then add provider/lazy boundaries, then wire components.
+6. Add animation/3D components behind fallbacks.
+7. Build reveal/report UI.
+8. Run verification.
 
 ## Verification
 
@@ -85,10 +109,22 @@ npm run test
 npm run typecheck
 npm run lint
 npm run build
+npm audit --audit-level=moderate
 ```
 
-Use narrower checks while iterating, but final launch-impacting changes need all four.
+Use narrower checks while iterating, but final launch-impacting changes need all checks above. Package/dependency changes also need `npm audit --omit=dev` when production dependency risk is the target.
+
+After layout, locale, navigation, or analyzer changes, also run browser QA against the dev server:
+- `/`, `/en`, `/pt`
+- EN/PT language switch
+- `/analyzer` Act I → Act II
+- `/quiz`, `/profile`, `/characters`
+- browser console plus dev-server logs
+
+See `references/next-intl-routing-browser-qa.md` for exact sequence and route-specific pitfalls.
 
 ## Current caveat
 
 Always inspect `git status --short` before editing and avoid clobbering existing work.
+
+When cleanup requires destructive actions (`rm`, deleting duplicate assets, uninstalling packages), separate it from non-destructive fixes and get explicit approval before running it.
