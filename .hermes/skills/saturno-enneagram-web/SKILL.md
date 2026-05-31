@@ -42,6 +42,8 @@ For route/runtime QA after layout, locale, or navigation changes, see `reference
 
 For production cleanup/hardening after feature work, see `references/production-cleanup-hardening.md` for dependency audit, Analyzer AI `@google/genai` migration, schema/config pitfalls, integrity-test patterns, production smoke, and review loop.
 
+For perfectionist Next.js code-quality/reference review, see `references/perfectionist-nextjs-code-review.md` for next-intl import pitfalls, stale-reference checks, locale-link review, asset/dependency cleanup discipline, and the “many issues” review sequence.
+
 ## Product goal
 
 Build a premium, animated Enneagram personality-test experience.
@@ -93,11 +95,12 @@ This project uses Next.js 16 / React 19. Before uncertain Next API work, inspect
 
 1. Read the active project-local plan.
 2. Check current git status; do not overwrite user changes.
-3. For scoring/data work: update tests first, expand data contract, upgrade scoring engine.
-4. For `/analyzer` presentation work: preserve logic/contracts first, then add provider/lazy boundaries, then wire components.
-5. Add animation/3D components behind fallbacks.
-6. Build reveal/report UI.
-7. Run verification.
+3. For code-quality/reference review: run `npm run lint` and `npm run typecheck` early, then inspect imports, locale links, package deps, asset paths, and stale docs/references before claiming cleanup is done.
+4. For scoring/data work: update tests first, expand data contract, upgrade scoring engine.
+5. For `/analyzer` presentation work: preserve logic/contracts first, then add provider/lazy boundaries, then wire components.
+6. Add animation/3D components behind fallbacks.
+7. Build reveal/report UI.
+8. Run verification.
 
 ## Verification
 
@@ -123,3 +126,5 @@ See `references/next-intl-routing-browser-qa.md` for exact sequence and route-sp
 ## Current caveat
 
 Always inspect `git status --short` before editing and avoid clobbering existing work.
+
+When cleanup requires destructive actions (`rm`, deleting duplicate assets, uninstalling packages), separate it from non-destructive fixes and get explicit approval before running it.
