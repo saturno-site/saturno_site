@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import LanguageSelector from "@/components/LanguageSelector";
 
@@ -12,14 +13,23 @@ export default function Home() {
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(70,60,230,0.12),transparent_28%),linear-gradient(180deg,#ffffff_0%,#f9f8ff_100%)] text-slate-950">
       <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-12 px-6 py-10 lg:px-12">
         <header className="flex flex-col gap-8 rounded-[2rem] border border-slate-200 bg-white/90 p-8 shadow-soft shadow-slate-900/5 backdrop-blur sm:flex-row sm:items-center sm:justify-between">
-          <div className="max-w-2xl space-y-4">
-            <p className="text-xs uppercase tracking-[0.35em] text-slate-500">{t("header.superTitle")}</p>
-            <h1 className="text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
-              {t("welcome")}
-            </h1>
-            <p className="text-lg leading-8 text-slate-600 sm:text-xl">
-              {t("header.description")}
-            </p>
+          <div className="flex items-center gap-6">
+            <Image
+              src="/images/owner-logo.png"
+              alt="Saturno de Souza"
+              width={80}
+              height={80}
+              className="rounded-full object-cover w-20 h-20 border-2 border-white shadow-lg"
+            />
+            <div className="max-w-xl space-y-3">
+              <p className="text-xs uppercase tracking-[0.35em] text-slate-500">{t("header.superTitle")}</p>
+              <h1 className="text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
+                {t("welcome")}
+              </h1>
+              <p className="text-lg leading-8 text-slate-600 sm:text-xl">
+                {t("header.description")}
+              </p>
+            </div>
           </div>
 
           <div className="flex flex-col gap-4 sm:items-end">

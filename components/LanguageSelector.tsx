@@ -1,35 +1,40 @@
 // saturno/components/LanguageSelector.tsx
 'use client';
 
-import { usePathname, useRouter } from 'next/navigation';
+import { Link, usePathname } from 'next-intl/link';
 import { useLocale } from 'next-intl';
+import clsx from 'clsx';
 
 export default function LanguageSelector() {
-  const router = useRouter();
   const pathname = usePathname();
   const locale = useLocale();
 
-  const handleLanguageChange = (newLocale: string) => {
-    // This regex replaces the current locale in the path with the new one.
-    // e.g., /en/about -> /pt/about
-    const newPath = pathname.replace(`/${locale}`, `/${newLocale}`);
-    router.replace(newPath);
-  };
-
   return (
     <div className="flex items-center gap-2">
-      <button
-        onClick={() => handleLanguageChange('en')}
-        className={`px-3 py-1 text-sm rounded-md ${locale === 'en' ? 'bg-indigo-600 text-white' : 'bg-slate-200 text-slate-800'}`}
+      <Link
+        href={pathname}
+        locale="en"
+        className={clsx(
+          'px-3 py-1 text-sm rounded-md transition-colors',
+          locale === 'en' 
+            ? 'bg-indigo-600 text-white hover:bg-indigo-500' 
+            : 'bg-slate-200 text-slate-800 hover:bg-slate-300'
+        )}
       >
         EN
-      </button>
-      <button
-        onClick={() => handleLanguageChange('pt')}
-        className={`px-3 py-1 text-sm rounded-md ${locale === 'pt' ? 'bg-indigo-600 text-white' : 'bg-slate-200 text-slate-800'}`}
+      </Link>
+      <Link
+        href={pathname}
+        locale="pt"
+        className={clsx(
+          'px-3 py-1 text-sm rounded-md transition-colors',
+          locale === 'pt' 
+            ? 'bg-indigo-600 text-white hover:bg-indigo-500' 
+            : 'bg-slate-200 text-slate-800 hover:bg-slate-300'
+        )}
       >
         PT
-      </button>
+      </Link>
     </div>
   );
 }

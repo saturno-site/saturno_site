@@ -40,6 +40,8 @@ For the implemented `/analyzer` 3D + sound pattern, see `references/analyzer-3d-
 
 For route/runtime QA after layout, locale, or navigation changes, see `references/next-intl-routing-browser-qa.md` for the root-vs-locale layout pattern, next-intl `requestLocale` fallback, browser-smoke sequence, and analyzer backend error-state pitfall.
 
+For production cleanup/hardening after feature work, see `references/production-cleanup-hardening.md` for dependency audit, Analyzer AI `@google/genai` migration, schema/config pitfalls, integrity-test patterns, production smoke, and review loop.
+
 ## Product goal
 
 Build a premium, animated Enneagram personality-test experience.
@@ -104,9 +106,10 @@ npm run test
 npm run typecheck
 npm run lint
 npm run build
+npm audit --audit-level=moderate
 ```
 
-Use narrower checks while iterating, but final launch-impacting changes need all four.
+Use narrower checks while iterating, but final launch-impacting changes need all checks above. Package/dependency changes also need `npm audit --omit=dev` when production dependency risk is the target.
 
 After layout, locale, navigation, or analyzer changes, also run browser QA against the dev server:
 - `/`, `/en`, `/pt`

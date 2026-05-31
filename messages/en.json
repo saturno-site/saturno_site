@@ -3,6 +3,7 @@
     "welcome": "A modern Enneagram personality test experience.",
     "header": {
       "superTitle": "Saturno",
+      "ownerAltText": "Photo of Saturno de Souza",
       "description": "Build trust, collect insights, and help visitors discover their personality type with a playful test and modern storytelling.",
       "analyzerButton": "Start AI Analyzer",
       "quizButton": "Quick Test"
