@@ -6,6 +6,7 @@
 - Parent local memory: `../.hermes/memory/project.md`, `../.hermes/memory/decisions.md`, `../.hermes/memory/lessons.md`.
 - Parent active Plannotator/tasks: `../.hermes/plans_tasks/active.md`.
 - Local skill: `saturno-enneagram-web` from `../.hermes/skills/`.
+- OpenCode project skill: `saturno-project-integrity` from `~/.opencode/skills/` (load when doing architectural or integrity work).
 
 ## Operating mode
 - Caveman mode: brief, direct, no narrative.
@@ -32,24 +33,27 @@ Current planned direction: “Saturno Type Orbit” with scenario questions, ani
 - Next.js 16 + React 19 + TypeScript + Tailwind CSS 4 + Vitest.
 - This is NOT old Next.js. Read `node_modules/next/dist/docs/` before using uncertain Next APIs.
 - Before finalizing code changes, run relevant checks:
-  - `npm run test`
+  - `npm run test` (includes integrity tests at `tests/integrity/*.test.ts`)
   - `npm run typecheck`
   - `npm run lint`
   - `npm run build` when launch-impacting.
 
 ## Important files
 - Plan: `docs/plans/2026-05-30-modern-enneagram-experience.md`
-- Quiz UI: `components/quiz/QuizApp.tsx`
-- Enneagram data: `data/enneagram.ts`
-- Scoring: `lib/enneagram.ts`
-- Tests: `tests/enneagram.test.ts`
+- Data model: `data/enneagram-system.ts`
+- Scoring: `lib/scoring-engine.ts`
+- Tests: `tests/enneagram.test.ts` + `tests/integrity/*.test.ts`
 - Landing: `app/page.tsx`
+- Quiz orchestrator: `components/quiz/QuizApp.tsx`
+- Profile: `app/profile/page.tsx` + `components/profile/`
+- Characters: `app/characters/page.tsx` + `components/characters/`
+- Integrity skill: `~/.opencode/skills/saturno-project-integrity/SKILL.md`
 
 ## Implementation priority
-1. Research doc.
-2. Expand Enneagram data contract.
-3. Upgrade scoring/tests.
-4. Split quiz components.
-5. Add constellation/progress animation.
-6. Build result reveal.
-7. Verify with test/typecheck/lint/build.
+1. ✅ Research doc.
+2. ✅ Expand Enneagram data contract → `data/enneagram-system.ts`.
+3. ✅ Upgrade scoring → `lib/scoring-engine.ts` + integrity tests.
+4. ✅ Split quiz components → `components/quiz/`.
+5. ✅ Build result reveal → `app/profile/` + `components/profile/`.
+6. ✅ Characters/type gallery → `app/characters/` + `components/characters/`.
+7. Ongoing: Verify with integrity tests + typecheck/lint/build before merging.
